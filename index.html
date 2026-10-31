@@ -14,8 +14,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3.5' fill='%230e625d'/><g fill='none' stroke='white' stroke-width='1.5' stroke-linecap='round'><path d='M5.5 8h5M1.8 8h1.2M13 8h1.2M4 5.5v5M5.5 4.5v7M10.5 4.5v7M12 5.5v5'/></g></svg>">
-  <script type="module" crossorigin src="./assets/index-A8yz9ibb.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-BoASE0YN.css">
+  <script type="module" crossorigin src="./assets/index-CHdtwQqu.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-ByVl43IX.css">
 </head>
 <body>
 <nav>
@@ -57,9 +57,15 @@
     <div id="rutinas"></div>
   </section>
 
-  <!-- entreno en curso (secciones/entreno.ts): en la fila del nombre, la rutina y en qué ejercicio va, con sus controles; el ejercicio, debajo -->
-  <section class="card" id="vista-entreno" aria-labelledby="entrenoTit" hidden>
-    <div class="ctl-head"><p class="eyebrow" id="tit-entreno"></p><div class="filters" id="entrenoCtl"></div><h2 id="entrenoTit"></h2></div>
+  <!-- editor de una rutina (secciones/editor.ts): nombre, y cada ejercicio con su tabla de series -->
+  <section class="card" id="vista-rutina" aria-labelledby="tit-editor" hidden>
+    <div class="ctl-head"><h2 class="eyebrow" id="tit-editor">Editar rutina</h2><div class="filters" id="editorCtl"></div></div>
+    <div id="editor"></div>
+  </section>
+
+  <!-- entreno en curso (secciones/entreno.ts): la rutina y «Terminar» en la fila del nombre; todos los ejercicios, uno debajo de otro -->
+  <section class="card" id="vista-entreno" aria-labelledby="tit-entreno" hidden>
+    <div class="ctl-head"><h2 class="eyebrow" id="tit-entreno"></h2><div class="filters" id="entrenoCtl"></div></div>
     <div id="entreno"></div>
   </section>
 
@@ -106,27 +112,20 @@
   <div class="actions"><button class="btn btn--danger btn--lg" type="button" data-del>Eliminar</button><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button><button class="btn btn--primary btn--lg" value="ok">Guardar</button></div>
 </form></dialog>
 
-<!-- rutina: al crearla sigue abierta para añadirle ejercicios (que se guardan al momento, cada uno en su ventana) -->
+<!-- rutina nueva: solo el nombre; al guardarla se abre su editor para añadirle ejercicios -->
 <dialog id="dlg-rutina" tabindex="-1"><form novalidate method="dialog" data-tabla="rutinas">
-  <h3 data-t-new="Nueva rutina" data-t-edit="Editar rutina"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <h3 data-t-new="Nueva rutina" data-t-edit="Nueva rutina"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   <label class="fld"><span class="fl">Nombre</span><input name="Nombre" required autocomplete="off"></label>
-  <label class="fld">Notas<textarea name="Notas" rows="2" placeholder="Opcional"></textarea></label>
-  <section class="sub" data-edit-only aria-labelledby="tit-pasos">
-    <div class="ctl-head"><h4 class="eyebrow" id="tit-pasos">Ejercicios</h4><div class="filters" id="pasosCtl"></div></div>
-    <div id="listaPasos"></div>
-  </section>
   <div class="err"></div>
-  <div class="actions"><button class="btn btn--danger btn--lg" type="button" data-del>Eliminar</button><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button><button class="btn btn--primary btn--lg" value="ok">Guardar</button></div>
+  <div class="actions"><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button><button class="btn btn--primary btn--lg" value="ok">Crear</button></div>
 </form></dialog>
 
-<!-- ejercicio de una rutina: lo previsto (series, repeticiones, peso y descanso) -->
+<!-- ejercicio de una rutina: cuál, repeticiones objetivo y descanso (sus series, en la tabla del editor) -->
 <dialog id="dlg-paso" tabindex="-1"><form novalidate method="dialog" data-tabla="rutinaEjercicios">
   <h3 data-t-new="Añadir ejercicio" data-t-edit="Editar ejercicio de la rutina"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   <label class="fld"><span class="fl">Ejercicio</span><select name="ID_Ejercicio" id="pasoEj" data-req="1"></select></label>
   <!-- cifras cortas: siempre en dos columnas, también en el móvil -->
   <div class="f2 corto">
-    <label class="fld"><span class="fl">Series</span><input name="Series" required inputmode="numeric" data-tipo="ent" data-min="1" autocomplete="off"></label>
-    <label class="fld"><span class="fl">Peso (kg)</span><input name="Peso" inputmode="decimal" data-tipo="num" data-min="0" autocomplete="off"></label>
     <label class="fld"><span class="fl">Repeticiones mín.</span><input name="Reps_Min" inputmode="numeric" data-tipo="ent" data-min="1" autocomplete="off"></label>
     <label class="fld"><span class="fl">Repeticiones máx.</span><input name="Reps_Max" inputmode="numeric" data-tipo="ent" data-min="1" autocomplete="off"></label>
     <label class="fld"><span class="fl">Descanso (s)</span><input name="Descanso" inputmode="numeric" data-tipo="ent" data-min="0" autocomplete="off"></label>
