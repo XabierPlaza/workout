@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com https://apis.google.com https://www.gstatic.com https://ssl.gstatic.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data: blob: https://*.googleusercontent.com https://www.gstatic.com https://ssl.gstatic.com; connect-src 'self' https://www.googleapis.com https://content.googleapis.com https://accounts.google.com; frame-src https://accounts.google.com https://docs.google.com https://drive.google.com https://content.googleapis.com; font-src 'self' data:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Workout</title>
+<meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" data-auto="#ffffff">
+<meta name="theme-color" content="#16191c" media="(prefers-color-scheme: dark)" data-auto="#16191c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Workout">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3.5' fill='%230e625d'/><g fill='none' stroke='white' stroke-width='1.5' stroke-linecap='round'><path d='M5.5 8h5M1.8 8h1.2M13 8h1.2M4 5.5v5M5.5 4.5v7M10.5 4.5v7M12 5.5v5'/></g></svg>">
+  <script type="module" crossorigin src="./assets/index-A8yz9ibb.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BoASE0YN.css">
+</head>
+<body>
+<nav>
+  <div class="nav-in">
+    <div class="nav-left">
+      <a class="logo" href="#" id="toTop" title="Ir al inicio"><i aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5.5 8h5M1.8 8h1.2M13 8h1.2M4 5.5v5M5.5 4.5v7M10.5 4.5v7M12 5.5v5"/></svg></i><span>Workout</span></a>
+    </div>
+    <!-- pantallas de la app: el mismo componente .switch que el resto de selectores -->
+    <span class="switch vistas" role="group" aria-label="Pantalla" id="vistaSeg">
+      <button type="button" data-vista="entrenar" aria-pressed="true">Entrenar</button>
+      <button type="button" data-vista="historial" aria-pressed="false">Historial</button>
+    </span>
+    <div class="nav-right">
+      <button class="menu-btn" id="btnMenu" type="button" aria-expanded="false" aria-controls="topMenu" aria-label="Menú y ajustes" title="Menú y ajustes">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span class="dot" id="syncDot"></span></button>
+      <!-- menú desplegable (botón con aria-expanded): no es role="menu" porque lleva también el selector de tema -->
+      <div class="top-menu" id="topMenu" hidden>
+        <p class="tm-h">Entrenamiento</p>
+        <button type="button" id="btnEjercicios"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 12h7M3 12h1.5M19.5 12H21M6 8.5v7M8.5 7v10M15.5 7v10M18 8.5v7"/></svg>Ejercicios</button>
+        <div class="tm-sep" role="separator"></div>
+        <p class="tm-h">Datos</p>
+        <button type="button" id="btnDatos"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="7" ry="3"/><path d="M5 6v6c0 1.7 3.1 3 7 3s7-1.3 7-3V6M5 12v6c0 1.7 3.1 3 7 3s7-1.3 7-3v-6"/></svg><span class="tm-2l"><span id="btnDatosLbl">Datos y Google Drive</span><span class="tm-status" id="tmStatus"></span></span></button>  <!-- segunda línea: estado de los datos -->
+        <div class="tm-sep" role="separator"></div>
+        <p class="tm-h">Ajustes</p>
+        <div class="tm-theme"><span class="tm-theme-l"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg>Tema</span>
+          <span class="switch" role="group" aria-label="Tema" id="themeSeg"><button type="button" data-tema="auto" title="Según el móvil o el navegador">Auto</button><button type="button" data-tema="light">Claro</button><button type="button" data-tema="dark">Oscuro</button></span></div>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<main class="shell">
+  <h1 class="vh">Workout</h1>
+  <div id="errorBox"></div>
+
+  <section class="card" id="vista-entrenar" aria-labelledby="tit-rutinas">
+    <!-- como en toda la app: los controles de la sección, arriba a la derecha en la fila del nombre -->
+    <div class="ctl-head"><h2 class="eyebrow" id="tit-rutinas">Rutinas</h2><div class="filters" id="rutinasCtl"></div></div>
+    <div id="rutinas"></div>
+  </section>
+
+  <!-- entreno en curso (secciones/entreno.ts): en la fila del nombre, la rutina y en qué ejercicio va, con sus controles; el ejercicio, debajo -->
+  <section class="card" id="vista-entreno" aria-labelledby="entrenoTit" hidden>
+    <div class="ctl-head"><p class="eyebrow" id="tit-entreno"></p><div class="filters" id="entrenoCtl"></div><h2 id="entrenoTit"></h2></div>
+    <div id="entreno"></div>
+  </section>
+
+  <section class="card" id="vista-historial" aria-labelledby="tit-historial" hidden>
+    <div class="ctl-head"><h2 class="eyebrow" id="tit-historial">Historial</h2><div class="filters" id="historialCtl">
+      <span class="switch" role="group" aria-label="Vista del historial" id="histSeg"><button type="button" data-hist="sesiones" aria-pressed="true">Entrenamientos</button><button type="button" data-hist="progreso" aria-pressed="false">Progreso</button></span>
+      <select class="sel" id="progEj" aria-label="Ejercicio"></select></div></div>
+    <div id="historial"></div>
+  </section>
+</main>
+
+<div id="toast" role="status" aria-live="polite" popover="manual"></div>
+<!-- descanso entre series (ui/descanso.ts): franja abajo solo mientras cuenta; el aviso del final lo lee el toast -->
+<aside class="descanso" id="descanso" aria-label="Descanso" hidden><span>Descanso <span class="num" id="descansoT"></span></span><button type="button" class="btn btn--secondary btn--sm" id="descansoSaltar">Saltar</button></aside>
+
+<dialog id="dlg-confirm" class="dlg-confirm" tabindex="-1"><form method="dialog" class="plain">
+  <h3 id="cfmTitle">¿Seguro?</h3>
+  <p id="cfmMsg" class="cfm-msg"></p>
+  <div class="actions"><span class="sp"></span>
+    <button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button>
+    <button class="btn btn--danger-solid btn--lg" value="ok" id="cfmOk">Eliminar</button></div>
+</form></dialog>
+<dialog id="dlg-datos" tabindex="-1"><form method="dialog" class="plain">
+  <h3 id="datosTitle">Datos</h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div id="datosBody" class="datos-body"></div>
+  <div class="err" id="datosErr"></div>
+  <div class="actions"><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cerrar</button></div>
+</form></dialog>
+
+<!-- catálogo de ejercicios (menú ⋯ › Ejercicios): cada fila abre su formulario -->
+<dialog id="dlg-ejercicios" tabindex="-1"><form method="dialog" class="plain">
+  <h3>Ejercicios</h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div id="listaEjercicios"></div>
+  <div class="actions"><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cerrar</button><button class="btn btn--primary btn--lg" type="button" data-nueva="ejercicio"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Nuevo ejercicio</button></div>
+</form></dialog>
+
+<!-- formularios (dialogos/formulario.ts): name = columna del Excel; «*» en los obligatorios; los avisos los pone ui/validacion.ts -->
+<dialog id="dlg-ejercicio" tabindex="-1"><form novalidate method="dialog" data-tabla="ejercicios">
+  <h3 data-t-new="Nuevo ejercicio" data-t-edit="Editar ejercicio"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <label class="fld"><span class="fl">Nombre</span><input name="Nombre" required autocomplete="off"></label>
+  <label class="fld"><span class="fl">Grupo muscular</span><select name="Grupo" id="ejGrupo"><option value="" data-placeholder>Seleccionar…</option></select></label>
+  <label class="fld">Notas<textarea name="Notas" rows="2" placeholder="Opcional"></textarea></label>
+  <div class="err"></div>
+  <div class="actions"><button class="btn btn--danger btn--lg" type="button" data-del>Eliminar</button><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button><button class="btn btn--primary btn--lg" value="ok">Guardar</button></div>
+</form></dialog>
+
+<!-- rutina: al crearla sigue abierta para añadirle ejercicios (que se guardan al momento, cada uno en su ventana) -->
+<dialog id="dlg-rutina" tabindex="-1"><form novalidate method="dialog" data-tabla="rutinas">
+  <h3 data-t-new="Nueva rutina" data-t-edit="Editar rutina"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <label class="fld"><span class="fl">Nombre</span><input name="Nombre" required autocomplete="off"></label>
+  <label class="fld">Notas<textarea name="Notas" rows="2" placeholder="Opcional"></textarea></label>
+  <section class="sub" data-edit-only aria-labelledby="tit-pasos">
+    <div class="ctl-head"><h4 class="eyebrow" id="tit-pasos">Ejercicios</h4><div class="filters" id="pasosCtl"></div></div>
+    <div id="listaPasos"></div>
+  </section>
+  <div class="err"></div>
+  <div class="actions"><button class="btn btn--danger btn--lg" type="button" data-del>Eliminar</button><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button><button class="btn btn--primary btn--lg" value="ok">Guardar</button></div>
+</form></dialog>
+
+<!-- ejercicio de una rutina: lo previsto (series, repeticiones, peso y descanso) -->
+<dialog id="dlg-paso" tabindex="-1"><form novalidate method="dialog" data-tabla="rutinaEjercicios">
+  <h3 data-t-new="Añadir ejercicio" data-t-edit="Editar ejercicio de la rutina"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <label class="fld"><span class="fl">Ejercicio</span><select name="ID_Ejercicio" id="pasoEj" data-req="1"></select></label>
+  <!-- cifras cortas: siempre en dos columnas, también en el móvil -->
+  <div class="f2 corto">
+    <label class="fld"><span class="fl">Series</span><input name="Series" required inputmode="numeric" data-tipo="ent" data-min="1" autocomplete="off"></label>
+    <label class="fld"><span class="fl">Peso (kg)</span><input name="Peso" inputmode="decimal" data-tipo="num" data-min="0" autocomplete="off"></label>
+    <label class="fld"><span class="fl">Repeticiones mín.</span><input name="Reps_Min" inputmode="numeric" data-tipo="ent" data-min="1" autocomplete="off"></label>
+    <label class="fld"><span class="fl">Repeticiones máx.</span><input name="Reps_Max" inputmode="numeric" data-tipo="ent" data-min="1" autocomplete="off"></label>
+    <label class="fld"><span class="fl">Descanso (s)</span><input name="Descanso" inputmode="numeric" data-tipo="ent" data-min="0" autocomplete="off"></label>
+  </div>
+  <label class="fld">Notas<textarea name="Notas" rows="2" placeholder="Opcional"></textarea></label>
+  <div class="err"></div>
+  <div class="actions"><button class="btn btn--danger btn--lg" type="button" data-del>Eliminar</button><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button><button class="btn btn--primary btn--lg" value="ok">Guardar</button></div>
+</form></dialog>
+<!-- entrenamiento del historial (dialogos/sesion.ts) -->
+<dialog id="dlg-sesion" tabindex="-1"><form method="dialog" class="plain">
+  <h3 id="sesionTit"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div id="sesionBody" class="sesion-body"></div>
+  <div class="err" id="sesionErr"></div>
+  <div class="actions"><button class="btn btn--danger btn--lg" type="button" id="sesionDel">Eliminar</button><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cerrar</button></div>
+</form></dialog>
+<input type="file" id="fileImport" accept=".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" hidden>
+
+</body>
+</html>
