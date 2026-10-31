@@ -6,31 +6,25 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Workout</title>
 <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" data-auto="#ffffff">
-<meta name="theme-color" content="#16191c" media="(prefers-color-scheme: dark)" data-auto="#16191c">
+<meta name="theme-color" content="#0b0d10" media="(prefers-color-scheme: dark)" data-auto="#0b0d10">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-title" content="Workout">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3.5' fill='%230e625d'/><g fill='none' stroke='white' stroke-width='1.5' stroke-linecap='round'><path d='M5.5 8h5M1.8 8h1.2M13 8h1.2M4 5.5v5M5.5 4.5v7M10.5 4.5v7M12 5.5v5'/></g></svg>">
-  <script type="module" crossorigin src="./assets/index-CHdtwQqu.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-ByVl43IX.css">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3.5' fill='%23c6f432'/><g fill='none' stroke='%231a2405' stroke-width='1.5' stroke-linecap='round'><path d='M5.5 8h5M1.8 8h1.2M13 8h1.2M4 5.5v5M5.5 4.5v7M10.5 4.5v7M12 5.5v5'/></g></svg>">
+  <script type="module" crossorigin src="./assets/index-C75x2jXq.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-DiKQ4nws.css">
 </head>
 <body>
-<nav>
-  <div class="nav-in">
-    <div class="nav-left">
-      <a class="logo" href="#" id="toTop" title="Ir al inicio"><i aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M5.5 8h5M1.8 8h1.2M13 8h1.2M4 5.5v5M5.5 4.5v7M10.5 4.5v7M12 5.5v5"/></svg></i><span>Workout</span></a>
-    </div>
-    <!-- pantallas de la app: el mismo componente .switch que el resto de selectores -->
-    <span class="switch vistas" role="group" aria-label="Pantalla" id="vistaSeg">
-      <button type="button" data-vista="entrenar" aria-pressed="true">Entrenar</button>
-      <button type="button" data-vista="historial" aria-pressed="false">Historial</button>
-    </span>
+<!-- navegación abajo, al alcance del pulgar (como Hevy y Strong): las dos pantallas y «Más» (el menú) -->
+<nav class="barra" aria-label="Navegación">
+  <div class="barra-in" id="vistaSeg">
+    <button type="button" class="barra-btn" data-vista="entrenar" aria-pressed="true"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8.5 12h7M3 12h1.5M19.5 12H21M6 8.5v7M8.5 7v10M15.5 7v10M18 8.5v7"/></svg><span>Entrenar</span></button>
+    <button type="button" class="barra-btn" data-vista="historial" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19h16M7 16V11M12 16V6M17 16v-7"/></svg><span>Historial</span></button>
     <div class="nav-right">
-      <button class="menu-btn" id="btnMenu" type="button" aria-expanded="false" aria-controls="topMenu" aria-label="Menú y ajustes" title="Menú y ajustes">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span class="dot" id="syncDot"></span></button>
+      <button class="barra-btn menu-btn" id="btnMenu" type="button" aria-expanded="false" aria-controls="topMenu" aria-label="Más: ejercicios, datos y ajustes"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg><span>Más</span><span class="dot" id="syncDot"></span></button>
       <!-- menú desplegable (botón con aria-expanded): no es role="menu" porque lleva también el selector de tema -->
       <div class="top-menu" id="topMenu" hidden>
         <p class="tm-h">Entrenamiento</p>
@@ -78,8 +72,11 @@
 </main>
 
 <div id="toast" role="status" aria-live="polite" popover="manual"></div>
-<!-- descanso entre series (ui/descanso.ts): franja abajo solo mientras cuenta; el aviso del final lo lee el toast -->
-<aside class="descanso" id="descanso" aria-label="Descanso" hidden><span>Descanso <span class="num" id="descansoT"></span></span><button type="button" class="btn btn--secondary btn--sm" id="descansoSaltar">Saltar</button></aside>
+<!-- descanso entre series (ui/descanso.ts): franja a todo el ancho abajo, solo mientras cuenta; el aviso del final lo lee el toast -->
+<aside class="descanso" id="descanso" aria-label="Descanso" hidden>
+  <div class="desc-barra" aria-hidden="true"><span id="descansoProg"></span></div>
+  <div class="desc-in"><span class="desc-l">Descanso</span><span class="num desc-t" id="descansoT"></span><button type="button" class="btn btn--secondary btn--lg" id="descansoSaltar">Saltar</button></div>
+</aside>
 
 <dialog id="dlg-confirm" class="dlg-confirm" tabindex="-1"><form method="dialog" class="plain">
   <h3 id="cfmTitle">¿Seguro?</h3>
