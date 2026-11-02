@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="es">
 <head>
-<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com https://apis.google.com https://www.gstatic.com https://ssl.gstatic.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data: blob: https://*.googleusercontent.com https://www.gstatic.com https://ssl.gstatic.com; connect-src 'self' https://www.googleapis.com https://content.googleapis.com https://accounts.google.com; frame-src https://accounts.google.com https://docs.google.com https://drive.google.com https://content.googleapis.com; font-src 'self' data:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
+<meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://accounts.google.com https://apis.google.com https://www.gstatic.com https://ssl.gstatic.com; style-src 'self' 'unsafe-inline' https://accounts.google.com; img-src 'self' data: blob: https://*.googleusercontent.com https://www.gstatic.com https://ssl.gstatic.com; connect-src 'self' https://www.googleapis.com https://content.googleapis.com https://accounts.google.com; frame-src https://accounts.google.com https://docs.google.com https://drive.google.com https://content.googleapis.com; media-src 'self' blob:; font-src 'self' data:; worker-src 'self'; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'none'">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Workout</title>
@@ -14,8 +14,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3.5' fill='%2324292d'/><g fill='none' stroke='%23ffd600' stroke-width='1.5' stroke-linecap='round'><path d='M5.5 8h5M1.8 8h1.2M13 8h1.2M4 5.5v5M5.5 4.5v7M10.5 4.5v7M12 5.5v5'/></g></svg>">
-  <script type="module" crossorigin src="./assets/index-DUXuwoyy.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-SP53rkAN.css">
+  <script type="module" crossorigin src="./assets/index-B_kRL8-E.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BIautHfU.css">
 </head>
 <body>
 <!-- navegación abajo, al alcance del pulgar (como Hevy y Strong): las dos pantallas y «Más» (el menú) -->
@@ -36,6 +36,9 @@
         <p class="tm-h">Ajustes</p>
         <div class="tm-theme"><span class="tm-theme-l"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 4a8 8 0 0 0 0 16z" fill="currentColor"/></svg>Tema</span>
           <span class="switch" role="group" aria-label="Tema" id="themeSeg"><button type="button" data-tema="auto" title="Según el móvil o el navegador">Auto</button><button type="button" data-tema="light">Claro</button><button type="button" data-tema="dark">Oscuro</button></span></div>
+        <!-- fotos de los ejercicios (miniaturas en el entreno, el editor y el catálogo): se recuerda en cada dispositivo -->
+        <div class="tm-theme"><span class="tm-theme-l"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="m4 17 5-4.5 3.5 3 3-2.5 4.5 4"/></svg>Fotos</span>
+          <span class="switch" role="group" aria-label="Fotos de los ejercicios" id="fotosSeg"><button type="button" data-fotos="si">Sí</button><button type="button" data-fotos="no">No</button></span></div>
       </div>
     </div>
   </div>
@@ -43,6 +46,7 @@
 
 <main class="shell">
   <h1 class="vh">Workout</h1>
+  <p class="vh" id="asaAyuda">Mantén pulsado y arrastra para cambiar el orden, o usa las flechas arriba y abajo.</p>
   <div id="errorBox"></div>
 
   <section class="card" id="vista-entrenar" aria-labelledby="tit-rutinas">
@@ -72,10 +76,16 @@
 </main>
 
 <div id="toast" role="status" aria-live="polite" popover="manual"></div>
-<!-- descanso entre series (ui/descanso.ts): franja a todo el ancho abajo, solo mientras cuenta; el aviso del final lo lee el toast -->
+<!-- entreno en curso minimizado (secciones/entreno.ts): franja encima de la barra de abajo para volver a él -->
+<button type="button" class="en-curso" id="enCurso" hidden><span class="ec-l">En curso</span><span class="ec-n" id="enCursoN"></span><span class="num ec-t" id="enCursoT"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+<!-- descanso entre series (ui/descanso.ts): al empezar, a pantalla completa; minimizado, franja a todo el ancho abajo
+     (solo con el entreno a la vista; si no, lo que queda sale en la franja «En curso»). El aviso del final lo lee el toast -->
 <aside class="descanso" id="descanso" aria-label="Descanso" hidden>
   <div class="desc-barra" aria-hidden="true"><span id="descansoProg"></span></div>
-  <div class="desc-in"><span class="desc-l">Descanso</span><span class="num desc-t" id="descansoT"></span><button type="button" class="btn btn--secondary btn--lg" id="descansoSaltar">Saltar</button></div>
+  <div class="desc-in">
+    <button type="button" class="desc-ver" id="descansoVer"><span class="desc-l">Descanso</span><span class="num desc-t" id="descansoT"></span><span class="vh">, ver en grande</span></button>
+    <div class="desc-acc"><button type="button" class="btn btn--secondary" id="descansoMin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span class="btn-lbl">Minimizar</span></button><button type="button" class="btn btn--secondary" id="descansoSaltar">Saltar</button></div>
+  </div>
 </aside>
 
 <dialog id="dlg-confirm" class="dlg-confirm" tabindex="-1"><form method="dialog" class="plain">
@@ -104,6 +114,11 @@
   <h3 data-t-new="Nuevo ejercicio" data-t-edit="Editar ejercicio"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
   <label class="fld"><span class="fl">Nombre</span><input name="Nombre" required autocomplete="off"></label>
   <label class="fld"><span class="fl">Grupo muscular</span><select name="Grupo" id="ejGrupo"><option value="" data-placeholder>Seleccionar…</option></select></label>
+  <!-- foto (datos/fotos.ts): de la galería o de la cámara; el campo guarda solo su nombre -->
+  <div class="fld"><span class="fl" id="ejFotoL">Foto</span>
+    <div class="foto-ed" role="group" aria-labelledby="ejFotoL"><span class="foto-prev" id="ejFotoPrev"></span>
+      <button type="button" class="btn btn--secondary" id="ejFotoElegir">Elegir foto</button><button type="button" class="btn btn--danger" id="ejFotoQuitar">Quitar</button></div>
+    <input type="hidden" name="Imagen" id="ejFoto"><input type="file" accept="image/*" id="ejFotoArchivo" hidden></div>
   <label class="fld">Notas<textarea name="Notas" rows="2" placeholder="Opcional"></textarea></label>
   <div class="err"></div>
   <div class="actions"><button class="btn btn--danger btn--lg" type="button" data-del>Eliminar</button><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button><button class="btn btn--primary btn--lg" value="ok">Guardar</button></div>
@@ -130,6 +145,12 @@
   <label class="fld">Notas<textarea name="Notas" rows="2" placeholder="Opcional"></textarea></label>
   <div class="err"></div>
   <div class="actions"><button class="btn btn--danger btn--lg" type="button" data-del>Eliminar</button><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button><button class="btn btn--primary btn--lg" value="ok">Guardar</button></div>
+</form></dialog>
+<!-- foto de un ejercicio en grande (al tocar su miniatura) -->
+<dialog id="dlg-foto" tabindex="-1"><form method="dialog" class="plain">
+  <h3 id="fotoTit"></h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <img id="fotoGrande" class="foto-grande" alt="">
+  <div class="actions"><span class="sp"></span><button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cerrar</button></div>
 </form></dialog>
 <!-- entrenamiento del historial (dialogos/sesion.ts) -->
 <dialog id="dlg-sesion" tabindex="-1"><form method="dialog" class="plain">
