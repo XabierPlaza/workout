@@ -14,8 +14,8 @@
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="iconos/apple-touch-icon.png">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'><rect width='16' height='16' rx='3.5' fill='%2324292d'/><g fill='none' stroke='%23ffd600' stroke-width='1.5' stroke-linecap='round'><path d='M5.5 8h5M1.8 8h1.2M13 8h1.2M4 5.5v5M5.5 4.5v7M10.5 4.5v7M12 5.5v5'/></g></svg>">
-  <script type="module" crossorigin src="./assets/index-B8X1AygY.js"></script>
-  <link rel="stylesheet" crossorigin href="./assets/index-ChJ1357M.css">
+  <script type="module" crossorigin src="./assets/index-D3nDZOMq.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-CdGOgEIb.css">
 </head>
 <body>
 <!-- navegación abajo, al alcance del pulgar (como Hevy y Strong): las dos pantallas y «Más» (el menú) -->
@@ -77,13 +77,14 @@
 
 <div id="toast" role="status" aria-live="polite" popover="manual"></div>
 <!-- entreno en curso minimizado (secciones/entreno.ts): franja encima de la barra de abajo para volver a él -->
-<button type="button" class="en-curso" id="enCurso" hidden><span class="ec-l">En curso</span><span class="ec-n" id="enCursoN"></span><span class="num ec-t" id="enCursoT"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
+<button type="button" class="en-curso" id="enCurso" hidden><span class="ec-n" id="enCursoN"></span><span class="ec-l">en curso</span><span class="num ec-t" id="enCursoT"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 15 6-6 6 6"/></svg></button>
 <!-- descanso entre series (ui/descanso.ts): al empezar, a pantalla completa; minimizado, franja a todo el ancho abajo
      (solo con el entreno a la vista; si no, lo que queda sale en la franja «En curso»). El aviso del final lo lee el toast -->
 <aside class="descanso" id="descanso" aria-label="Descanso" hidden>
   <div class="desc-barra" aria-hidden="true"><span id="descansoProg"></span></div>
   <div class="desc-in">
     <button type="button" class="desc-ver" id="descansoVer"><span class="desc-l">Descanso</span><span class="num desc-t" id="descansoT"></span><span class="vh">, ver en grande</span></button>
+    <div class="desc-aj"><button type="button" class="btn btn--secondary" id="descansoMenos">−15 s</button><button type="button" class="btn btn--secondary" id="descansoMas">+15 s</button></div>
     <div class="desc-acc"><button type="button" class="btn btn--secondary" id="descansoMin"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg><span class="btn-lbl">Minimizar</span></button><button type="button" class="btn btn--secondary" id="descansoSaltar">Saltar</button></div>
   </div>
 </aside>
@@ -101,6 +102,12 @@
   <div class="actions"><span class="sp"></span>
     <button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button>
     <button class="btn btn--primary btn--lg" value="ok" id="empOk">Empezar</button></div>
+</form></dialog>
+<dialog id="dlg-elegir" tabindex="-1"><form method="dialog" class="plain">
+  <h3 id="elegirTitle">Añadir ejercicio</h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+  <div id="elegirLista"></div>
+  <div class="actions"><button type="button" class="btn btn--secondary btn--lg" id="elegirNuevo"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="btn-lbl">Nuevo ejercicio</span></button><span class="sp"></span>
+    <button class="btn btn--secondary btn--lg" value="cancel" formnovalidate>Cancelar</button></div>
 </form></dialog>
 <dialog id="dlg-datos" tabindex="-1"><form method="dialog" class="plain">
   <h3 id="datosTitle">Datos</h3><button class="dlg-x" value="cancel" formnovalidate aria-label="Cerrar"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
